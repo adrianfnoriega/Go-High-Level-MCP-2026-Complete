@@ -194,22 +194,24 @@ mcporter call ghl-mcp search_contacts --params '{"query": "test"}'
 
 ---
 
-> **🔥 Transform Claude Desktop into a complete GoHighLevel CRM powerhouse with 563+ powerful tools across 41+ categories**
+> **🔥 Transform Claude Desktop into a complete GoHighLevel CRM powerhouse with 563+ powerful tools across 44 categories**
 
 ## 🎯 What This Does
 
 This comprehensive MCP (Model Context Protocol) server connects Claude Desktop directly to your GoHighLevel account, providing unprecedented automation capabilities:
 
+- **🤖 Agent Studio** *(World's First MCP with Agent Studio API — March 2026)*: Build, configure, and deploy GHL AI agents entirely from code. Clone agents across all sub-accounts in seconds.
 - **👥 Complete Contact Management**: 31 tools for contacts, tasks, notes, and relationships
-- **💬 Advanced Messaging**: 20 tools for SMS, email, conversations, and call recordings  
-- **🏢 Business Operations**: Location management, custom objects, workflows, and surveys
+- **💬 Advanced Messaging**: 20 tools for SMS, email, conversations, and call recordings
+- **🏢 Business Operations**: Location management, custom objects, associations graph, workflows, and surveys
 - **💰 Sales & Revenue**: Opportunities, payments, invoices, estimates, and billing automation
 - **📱 Marketing Automation**: Social media, email campaigns, blog management, and media library
 - **🛒 E-commerce**: Store management, products, inventory, shipping, and order fulfillment
+- **📞 Phone System**: 15 tools — buy numbers, call recordings, voicemail, BYOC trunks, forwarding
 - **🎙️ Voice AI**: 11 tools for managing voice AI agents, actions, and call logs
+- **📧 Email Infrastructure**: Domain management, DKIM/SPF records, deliverability stats
 - **📄 Proposals & Documents**: 4 tools for document/contract automation and templates
 - **🏪 Marketplace**: 7 tools for app installations and billing management
-- **📋 Custom Menus**: 5 tools for white-label menu customization
 
 ## ⚡ Quick Deploy Options
 
@@ -502,8 +504,11 @@ This comprehensive MCP (Model Context Protocol) server connects Claude Desktop d
 **BYOC (Bring Your Own Carrier):**
 - `ghl_get_byoc_trunk`, `ghl_create_byoc_trunk`, `ghl_list_byoc_trunks`
 
-### 🤖 Agent Studio (8 Tools) — NEW March 2026
-The brand-new GHL Agent Studio API for building and deploying AI agents programmatically.
+### 🤖 Agent Studio (8 Tools) — 🚨 WORLD FIRST — March 2026
+> **GHL dropped the Agent Studio API on March 13, 2026. We shipped support the same night. This is the first MCP server in the world with GHL Agent Studio integration.**
+
+Build, configure, and deploy GHL AI agents **entirely from code**. No more clicking through the UI — create agents programmatically, update conversation graphs (nodes/edges/variables), and deploy to production in seconds. The killer use case: build one perfect agent, then **clone it across all your client sub-accounts in a single loop**.
+
 Required scope: `agent-studio_write`
 
 **Agent CRUD:**
@@ -1056,7 +1061,7 @@ This project is licensed under the **ISC License** - see the [LICENSE](LICENSE) 
 
 This comprehensive MCP server delivers:
 
-### ✅ **520+ Operational Tools** across 41 categories
+### ✅ **563+ Operational Tools** across 44 categories
 ### ✅ **Real-time GoHighLevel Integration** with full API coverage
 ### ✅ **Production-Ready Deployment** on multiple platforms
 ### ✅ **Enterprise-Grade Architecture** with comprehensive error handling
