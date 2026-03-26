@@ -46,9 +46,7 @@ function log(level: LogLevel, msg: string, data?: Record<string, unknown>) {
 
 // ─── Server Bootstrap ───────────────────────────────────────
 
-async function main() {
-  const port = parseInt(process.env.PORT || process.env.MCP_SERVER_PORT || '8000');
-
+async function createApp(): Promise<express.Express> {
   // ── 1. Initialize GHL Client ─────────────────────────────
   const config: GHLConfig = {
     accessToken: process.env.GHL_API_KEY || '',
@@ -146,7 +144,8 @@ async function main() {
       if (!origin) return callback(null, true);
       if (/^https?:\/\/localhost(:\d+)?$/.test(origin) ||
           origin === 'https://chatgpt.com' ||
-          origin === 'https://chat.openai.com') {
+          origin === 'https://chat.openai.com' ||
+          /\.vercel\.app$/.test(origin)) {
         return callback(null, true);
       }
       callback(new Error('CORS not allowed'));
@@ -505,17 +504,8 @@ async function main() {
     }
   });
 
-  // ── 9. Start Server ──────────────────────────────────────
-  app.listen(port, '0.0.0.0', () => {
-    console.log('🚀 GoHighLevel MCP Server v2.0');
-    console.log('═══════════════════════════════════════════');
-    console.log(`🌐 Server: http://0.0.0.0:${port}`);
-    console.log(`📡 Streamable HTTP: http://0.0.0.0:${port}/mcp`);
-    console.log(`🔗 Legacy SSE: http://0.0.0.0:${port}/sse`);
-    console.log(`🛠️  Tools: ${totalTools}`);
-    console.log(`📦 SDK: @modelcontextprotocol/sdk 1.27.1`);
-    console.log('═══════════════════════════════════════════');
-  });
+  // ── 9. Return app (listen handled separately) ─────────
+  return app;
 }
 
 // ─── Graceful Shutdown ──────────────────────────────────────
@@ -523,8 +513,42 @@ async function main() {
 process.on('SIGINT', () => { log('info', 'Shutting down (SIGINT)'); process.exit(0); });
 process.on('SIGTERM', () => { log('info', 'Shutting down (SIGTERM)'); process.exit(0); });
 
-main().catch((err) => {
-  log('error', 'Fatal error', { error: err.message, stack: err.stack });
-  console.error('💥 Fatal error:', err);
-  process.exit(1);
-});
+// ─── Lazy-init singleton for serverless ─────────────────────
+
+let _appPromise: Promise<express.Express> | null = null;
+
+function getApp(): Promise<express.Express> {
+  if (!_appPromise) {
+    _appPromise = createApp();
+  }
+  return _appPromise;
+}
+
+// Export for Vercel (serverless handler)
+export default async function handler(req: any, res: any) {
+  const app = await getApp();
+  app(req, res);
+}
+export { getApp };
+
+// ─── Direct start (non-Vercel) ──────────────────────────────
+
+if (!process.env.VERCEL) {
+  createApp()
+    .then((app) => {
+      const port = parseInt(process.env.PORT || process.env.MCP_SERVER_PORT || '8000');
+      app.listen(port, '0.0.0.0', () => {
+        console.log('🚀 GoHighLevel MCP Server v2.0');
+        console.log('═══════════════════════════════════════════');
+        console.log(`🌐 Server: http://0.0.0.0:${port}`);
+        console.log(`📡 Streamable HTTP: http://0.0.0.0:${port}/mcp`);
+        console.log(`🔗 Legacy SSE: http://0.0.0.0:${port}/sse`);
+        console.log('═══════════════════════════════════════════');
+      });
+    })
+    .catch((err) => {
+      log('error', 'Fatal error', { error: err.message, stack: err.stack });
+      console.error('💥 Fatal error:', err);
+      process.exit(1);
+    });
+}
